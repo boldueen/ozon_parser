@@ -5,9 +5,17 @@
 ```bash=
 cd your/code/folder
 git clone https://github.com/boldueen/ozon_parser.git
+cd ozon_parser
 python3.10 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
+```
+
+`remove unused files`
+
+```bash
+rm ./data/category_fees/delete_after_install.txt
+rm ./data/fbo_fbs/delete_after_install.txt
 ```
 
 ### run fbo_fbs parser
