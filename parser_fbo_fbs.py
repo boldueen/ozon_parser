@@ -10,6 +10,8 @@ import numpy as np
 import json
 from pprint import pprint
 
+from savers import save_prices_to_gsheet
+
 ozon_prices: list[OzonPrice] = []
 
 
@@ -38,6 +40,7 @@ async def main():
 
     pprint(sorted(ozon_prices))
     save_fbo_dbs_to_excel(sorted(ozon_prices))
+    save_prices_to_gsheet(ozon_prices)
 
 if __name__ == '__main__':
     asyncio.run(main())

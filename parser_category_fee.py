@@ -10,6 +10,8 @@ import numpy as np
 import json
 from pprint import pprint
 
+from savers import save_fees_to_gsheet
+
 categories = []
 
 
@@ -41,6 +43,7 @@ async def main():
 
     pprint(len(categories))
     save_category_fees_to_excel(categories)
+    save_fees_to_gsheet(categories)
 
 if __name__ == '__main__':
     asyncio.run(main())

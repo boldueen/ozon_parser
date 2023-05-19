@@ -11,7 +11,8 @@ async def get_volume_weight_body(volume_weight: float) -> dict:
 
 async def get_headers() -> dict:
     return {
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        'Accept':'application/json, text/plain, */*'
     }
 
 
@@ -39,7 +40,11 @@ async def get_req_cat_fee(category_obj: dict) -> ReqCatFee:
 async def get_category_ids() -> list[ReqCatFee]:
     categories_for_response = []
     raw_response = requests.post(
-        'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/tree', headers=await get_headers())
+        'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/tree', headers=await get_headers()   
+    )
+    
+    print(raw_response.text)
+
     categories = json.loads(raw_response.text).get('items')
     # print(categories_lvl_one)
 
@@ -82,3 +87,32 @@ async def extract_category_fee_from_response(category: ReqCatFee, response: dict
         delivered_percent=response.get('deliveredPercent')
     )
     return ozon_cat_fee
+
+
+def get_fees_as_list(data: list[OzonCategoryFee]) -> list:
+    response = []
+    for obj in data:
+        response.append([
+            obj.base_category.category_id,
+            obj.marketplace_category,
+            obj.base_category.name,
+            obj.fee,
+            obj.delivered_percent
+        ])
+    return response
+
+
+def get_prices_as_list(data: list[OzonPrice]) -> list:
+    response = []
+    for obj in data:
+        print(obj)
+        response.append([
+            obj.volume_weight,
+            obj.fbo.coefficient,
+            obj.fbo.min,
+            obj.fbo.max,
+            obj.fbs.coefficient,
+            obj.fbs.min,
+            obj.fbs.max,
+        ])
+    return response
