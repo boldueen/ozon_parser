@@ -11,6 +11,9 @@ python3.10 -m venv venv
 pip install -r requirements.txt
 ```
 
+`add your config.json file (for enable gsheets)`
+and set config.json name to config.py
+
 `remove unused files`
 
 ```bash
