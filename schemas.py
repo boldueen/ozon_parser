@@ -27,3 +27,6 @@ class OzonCategoryFee(BaseModel):
     marketplace_category: str = ''
     fee: float = 0
     delivered_percent: float = 0
+
+    def __lt__(self, other):
+        return self.marketplace_category < other.marketplace_category
