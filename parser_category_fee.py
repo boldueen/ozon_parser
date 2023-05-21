@@ -1,21 +1,18 @@
+import asyncio
 from aiohttp import ClientSession
-from schemas import OzonPrice, TypePrice, ReqCatFee
+from schemas import ReqCatFee
 
 from utils import get_category_body, get_headers, extract_category_fee_from_response, get_category_ids
 from savers import save_category_fees_to_excel
 
-import asyncio
-import numpy as np
-
 import json
-from pprint import pprint
-
 from savers import save_fees_to_gsheet
+
 
 categories = []
 
 
-async def parse_category_fee(category: ReqCatFee, session) -> OzonPrice:
+async def parse_category_fee(category: ReqCatFee, session):
     async with session.post(
         'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/values_by_category',
             json=await get_category_body(category),
@@ -32,6 +29,7 @@ async def parse_category_fee(category: ReqCatFee, session) -> OzonPrice:
 
 
 async def main():
+    print('start parsing categories_fee... .. .')
     categories_objs = await get_category_ids()
     tasks = []
     async with ClientSession() as session:
@@ -41,9 +39,15 @@ async def main():
             tasks.append(task)
         await asyncio.gather(*tasks)
 
-    pprint(len(categories))
-    save_category_fees_to_excel(categories)
-    save_fees_to_gsheet(categories)
+    sorted_categories = sorted(categories)
+    print(f"PARSED {len(sorted_categories)} values")
+
+    save_category_fees_to_excel(sorted_categories)
+    print(f"SAVED TO EXCEL")
+
+    save_fees_to_gsheet(sorted_categories)
+    print(f"SAVED TO G_SHEETS")
+
 
 if __name__ == '__main__':
     asyncio.run(main())

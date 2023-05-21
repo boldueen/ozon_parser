@@ -38,9 +38,13 @@ async def main():
             tasks.append(task)
         await asyncio.gather(*tasks)
 
-    pprint(sorted(ozon_prices))
-    save_fbo_dbs_to_excel(sorted(ozon_prices))
-    save_prices_to_gsheet(ozon_prices)
+    sorted_ozon_prices = sorted(ozon_prices)
+    print(f"PARSED {len(sorted_ozon_prices)} values")
+    save_fbo_dbs_to_excel(sorted_ozon_prices)
+    print(f"SAVED TO EXCEL")
+    save_prices_to_gsheet(sorted_ozon_prices)
+    print(f"SAVED TO G_SHEETS")
+
 
 if __name__ == '__main__':
     asyncio.run(main())
