@@ -1,16 +1,15 @@
 from schemas import OzonPrice, OzonCategoryFee
 import pygsheets
-import pandas as pd
+from pandas import DataFrame
 
 from config import SERVICE_FILE, TABLE_NAME
 
 
-
-def add_data_gsh(name_sheet: str, data: list[OzonPrice], start=(1, 1)):
+def add_data_gsh(name_sheet: str, data: DataFrame, start=(1, 1)):
     sh = open_connection()
-    
     wks = get_work_space(sh, name_sheet)
     print(wks.url)
+    wks.clear(fields='*')
     wks.set_dataframe(data, start)
     wks.adjust_column_width(1, 26)
 
