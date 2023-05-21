@@ -13,6 +13,7 @@ pip install -r requirements.txt
 
 `add your config.json file (for enable gsheets)`
 and set config.json name to config.py
+`SERVICE_FILE = r'./YOUT_CONFIG_FILENAME.json'`
 
 `remove unused files`
 
