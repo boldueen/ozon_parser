@@ -5,26 +5,29 @@ import pandas as pd
 from gsheet_worker import add_data_gsh
 from utils import get_prices_as_list, get_fees_as_list
 
+
 def save_prices_to_gsheet(ozon_prices: list[OzonPrice]):
     data_list = get_prices_as_list(ozon_prices)
 
-    title = ['Объёмный вес', 'fbo_coef', 'fbo_min', 'fbo_max', 'fbs_coef', 'fbs_min', 'fbs_max']
-
+    title = ['Объёмный вес', 'fbo_coef', 'fbo_min',
+             'fbo_max', 'fbs_coef', 'fbs_min', 'fbs_max']
 
     df = pd.DataFrame(data_list, columns=title)
+    print(df.dtypes)
     df = df.drop(df.index[0])
-    add_data_gsh('test_fbo_fbs',df)
+    add_data_gsh('test_fbo_fbs', df)
 
 
 def save_fees_to_gsheet(category_fees: list[OzonCategoryFee]):
     data_list = get_fees_as_list(category_fees)
 
-    title = ['Id категории', 'категория', 'название', 'комиссия', 'процент выкупа']
-
+    title = ['Id категории', 'категория',
+             'название', 'комиссия', 'процент выкупа']
 
     df = pd.DataFrame(data_list, columns=title)
     df = df.drop(df.index[0])
     add_data_gsh('test_fee_categories', df)
+
 
 def save_fbo_dbs_to_excel(ozon_prices: list[OzonPrice]):
     filepath = f'./data/fbo_fbs/fbo_fbs-{datetime.now().date()}.xlsx'
@@ -73,6 +76,3 @@ def save_category_fees_to_excel(fees: list[OzonCategoryFee]):
             fee.delivered_percent
         ])
     wb.save(filepath)
-
-
-
