@@ -1,4 +1,3 @@
-from schemas import OzonPrice, OzonCategoryFee
 import pygsheets
 from pandas import DataFrame
 
