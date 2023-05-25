@@ -1,8 +1,7 @@
 import json
-from schemas import OzonPrice, TypePrice, OzonCategoryFee, ReqCatFee
 import requests
 
-from pprint import pprint
+from schemas import OzonPrice, TypePrice, OzonCategoryFee, ReqCatFee
 
 
 async def get_volume_weight_body(volume_weight: float) -> dict:
@@ -12,7 +11,7 @@ async def get_volume_weight_body(volume_weight: float) -> dict:
 async def get_headers() -> dict:
     return {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-        'Accept':'application/json, text/plain, */*'
+        'Accept': 'application/json, text/plain, */*'
     }
 
 
@@ -29,7 +28,6 @@ async def extract_prices_from_response(volume_weight: float, response: dict) -> 
 
 
 async def get_req_cat_fee(category_obj: dict) -> ReqCatFee:
-    print('-------\n', category_obj)
     return ReqCatFee(
         name=category_obj.get('name'),
         category_id=category_obj.get('id'),
@@ -40,13 +38,10 @@ async def get_req_cat_fee(category_obj: dict) -> ReqCatFee:
 async def get_category_ids() -> list[ReqCatFee]:
     categories_for_response = []
     raw_response = requests.post(
-        'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/tree', headers=await get_headers()   
+        'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/tree', headers=await get_headers()
     )
-    
-    print(raw_response.text)
 
     categories = json.loads(raw_response.text).get('items')
-    # print(categories_lvl_one)
 
     for cat_lvl_1 in categories:
         categories_for_response.append(await get_req_cat_fee(cat_lvl_1))
@@ -71,7 +66,6 @@ async def get_category_ids() -> list[ReqCatFee]:
 
 
 async def get_category_body(category: ReqCatFee):
-    print('CATEGORY\n', category)
     return {
         'categoryId': category.category_id,
         'level': category.level
@@ -79,7 +73,6 @@ async def get_category_body(category: ReqCatFee):
 
 
 async def extract_category_fee_from_response(category: ReqCatFee, response: dict) -> OzonCategoryFee:
-    print(response)
     ozon_cat_fee = OzonCategoryFee(
         base_category=category,
         marketplace_category=response.get('marketplaceCategory'),
