@@ -28,7 +28,8 @@ def save_fees_to_gsheet(category_fees: list[OzonCategoryFee]):
 
 
 def save_fbo_dbs_to_excel(ozon_prices: list[OzonPrice]):
-    filepath = f'./data/fbo_fbs/fbo_fbs-{datetime.now().date()}:{datetime.now().time()}.xlsx'
+    filename = f'fbo_fbs-{int(datetime.now().timestamp())}'
+    filepath = f'./data/fbo_fbs/{filename}.xlsx'
     wb = Workbook()
     wb.save(filepath)
     ws = wb.active
@@ -57,7 +58,8 @@ def save_fbo_dbs_to_excel(ozon_prices: list[OzonPrice]):
 
 
 def save_category_fees_to_excel(fees: list[OzonCategoryFee]):
-    filepath = f'./data/category_fees/category_fees-{datetime.now().date()}:{datetime.now().time()}.xlsx'
+    filename = f'category_fees-{int(datetime.now().timestamp())}'
+    filepath = f'./data/category_fees/{filename}.xlsx'
     wb = Workbook()
     wb.save(filepath)
     ws = wb.active
