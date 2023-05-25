@@ -1,31 +1,36 @@
+import json
 import asyncio
+
 from aiohttp import ClientSession
-from schemas import ReqCatFee
 
 from utils import get_category_body, get_headers, extract_category_fee_from_response, get_category_ids
-from savers import save_category_fees_to_excel
-
-import json
-from savers import save_fees_to_gsheet
+from savers import save_category_fees_to_excel, save_fees_to_gsheet
+from schemas import ReqCatFee
 
 
 categories = []
 
 
 async def parse_category_fee(category: ReqCatFee, session):
-    async with session.post(
-        'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/values_by_category',
-            json=await get_category_body(category),
-            headers=await get_headers()
-    ) as raw_response:
-        print(raw_response.status, category.category_id, category.name)
+    if category.level == 1:
+        print('[WARNING] categories with level=1 has no fee. skipping...')
+        return
+    for _ in range(10):
+        async with session.post(
+            'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/values_by_category',
+                json=await get_category_body(category),
+                headers=await get_headers()
+        ) as raw_response:
+            if raw_response.status == 200:
+                response = json.loads(await raw_response.text())
+                print(raw_response.status, category.category_id, category.name)
 
-        if raw_response.status == 200:
-            response = json.loads(await raw_response.text())
-            print(raw_response.status, category.category_id, category.name)
+                category = await extract_category_fee_from_response(category, response)
+                categories.append(category)
+                return
 
-            category = await extract_category_fee_from_response(category, response)
-            categories.append(category)
+    print(
+        f'[ERROR] unable to parse category_id:{category.category_id}')
 
 
 async def main():
