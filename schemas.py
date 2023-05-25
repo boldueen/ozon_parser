@@ -29,4 +29,6 @@ class OzonCategoryFee(BaseModel):
     delivered_percent: float = 0
 
     def __lt__(self, other):
+        if self.marketplace_category == other.marketplace_category:
+            return self.base_category.name < other.base_category.name
         return self.marketplace_category < other.marketplace_category
