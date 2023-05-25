@@ -1,9 +1,11 @@
-from schemas import OzonPrice, OzonCategoryFee
-from openpyxl import Workbook
 from datetime import datetime
 import pandas as pd
+
+from openpyxl import Workbook
+
 from gsheet_worker import add_data_gsh
 from utils import get_prices_as_list, get_fees_as_list
+from schemas import OzonPrice, OzonCategoryFee
 
 
 def save_fbo_fbs_to_gsheet(ozon_prices: list[OzonPrice]):
