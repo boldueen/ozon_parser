@@ -35,32 +35,33 @@ async def get_req_cat_fee(category_obj: dict) -> ReqCatFee:
     )
 
 
+async def get_all_categories_from_response(response: dict) -> list[ReqCatFee]:
+    categories = []
+    items = json.loads(response.text).get('items')
+    for lvl_1 in items:
+        c1 = await get_req_cat_fee(lvl_1)
+        categories.append(c1)
+
+        for lvl_2 in lvl_1.get('children', {}):
+            c2 = await get_req_cat_fee(lvl_2)
+            categories.append(c2)
+
+            for lvl_3 in lvl_2.get('children', {}):
+                c3 = await get_req_cat_fee(lvl_3)
+                categories.append(c3)
+
+                for lvl_4 in lvl_3.get('children', {}):
+                    c4 = await get_req_cat_fee(lvl_4)
+                    categories.append(c4)
+    return categories
+
+
 async def get_category_ids() -> list[ReqCatFee]:
     categories_for_response = []
     raw_response = requests.post(
         'https://seller.ozon.ru/api/site/calculator-ozon-ru/calculator/tree', headers=await get_headers()
     )
-
-    categories = json.loads(raw_response.text).get('items')
-
-    for cat_lvl_1 in categories:
-        categories_for_response.append(await get_req_cat_fee(cat_lvl_1))
-
-        for cat_lvl_2 in cat_lvl_1.get('children'):
-            categories_for_response.append(await get_req_cat_fee(cat_lvl_2))
-            if len(cat_lvl_2.get('children', [])) == 0:
-                break
-
-            for cat_lvl_3 in cat_lvl_2.get('children'):
-                categories_for_response.append(await get_req_cat_fee(cat_lvl_3))
-                if len(cat_lvl_3.get('children', [])) == 0:
-                    break
-
-            for cat_lvl_4 in cat_lvl_3.get('children'):
-                categories_for_response.append(await get_req_cat_fee(cat_lvl_4))
-                if len(cat_lvl_4.get('children', [])) == 0:
-                    break
-
+    categories_for_response = await get_all_categories_from_response(raw_response)
     print(categories_for_response, len(categories_for_response))
     return categories_for_response
 
