@@ -31,7 +31,7 @@ async def parse_price(volume_weight: float, session):
 
 
 async def main():
-    volume_weights = [round(x, 2) for x in np.arange(0.1, 35.1, 0.1)]
+    volume_weights = [round(x, 2) for x in np.arange(0.1, 115.1, 0.1)]
     tasks = []
     async with ClientSession() as session:
         for volume_weight in volume_weights:
