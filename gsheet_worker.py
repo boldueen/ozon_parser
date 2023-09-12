@@ -1,4 +1,5 @@
 import pygsheets
+from pygsheets import Worksheet
 from pandas import DataFrame
 
 from config import SERVICE_FILE, TABLE_NAME
@@ -8,7 +9,9 @@ def add_data_gsh(name_sheet: str, data: DataFrame, start=(1, 1)):
     sh = open_connection()
     wks = get_work_space(sh, name_sheet)
     print(wks.url)
+    rows = data.shape[0]
     wks.clear(fields='*')
+    wks.add_rows(rows)
     wks.set_dataframe(data, start)
     wks.adjust_column_width(1, 26)
 
@@ -59,7 +62,7 @@ def create_list_if_not_exist(sh, sheet):
     sh.add_worksheet(sheet)
 
 
-def get_work_space(sh, sheet):
+def get_work_space(sh, sheet) -> Worksheet:
     create_list_if_not_exist(sh, sheet)
     return sh.worksheet_by_title(sheet)
 
